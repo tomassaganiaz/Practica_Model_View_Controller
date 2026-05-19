@@ -1,0 +1,17 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY ./service/auth ./service/auth
+COPY ./service/auth/routes ./service/auth/routes
+COPY ./service/auth/controllers ./service/auth/controllers
+COPY ./service/auth/dao ./service/auth/dao
+COPY ./service/auth/config ./service/auth/config
+COPY ./service/auth/services ./service/auth/services
+COPY ./service/auth/index.js ./service/auth/index.js
+COPY ./service/auth/app.js ./service/auth/app.js
+
+EXPOSE 3004
+CMD ["node", "service/auth/index.js"]

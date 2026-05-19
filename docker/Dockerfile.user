@@ -1,0 +1,10 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY ./service/user ./service/user
+
+EXPOSE 3001
+CMD ["node", "service/user/index.js"]

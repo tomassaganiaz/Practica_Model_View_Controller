@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  db_auth:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: auth
+    volumes:
+      - db_auth_data:/var/lib/postgresql/data
+      - ./docker/init/db_auth:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+
+  db_usuarios:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: usuarios
+    volumes:
+      - db_usuarios_data:/var/lib/postgresql/data
+      - ./docker/init/db_usuarios:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+
+  db_libros:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: libros
+    volumes:
+      - db_libros_data:/var/lib/postgresql/data
+      - ./docker/init/db_libros:/docker-entrypoint-initdb.d
+    ports:
+      - "5435:5432"
+
+  db_loans:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: loans
+    volumes:
+      - db_loans_data:/var/lib/postgresql/data
+      - ./docker/init/db_loans:/docker-entrypoint-initdb.d
+    ports:
+      - "5436:5432"
+
+  auth:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.auth
+    depends_on:
+      - db_auth
+    environment:
+      PORT: 3004
+      DB_HOST: db_auth
+      DB_NAME: auth
+      DB_USER: admin
+      DB_PASSWORD: admin
+    ports:
+      - "3004:3004"
+
+  users:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.user
+    depends_on:
+      - db_usuarios
+    environment:
+      PORT: 3001
+      DB_HOST: db_usuarios
+      DB_NAME: usuarios
+      DB_USER: admin
+      DB_PASSWORD: admin
+    ports:
+      - "3001:3001"
+
+  books:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.books
+    depends_on:
+      - db_libros
+    environment:
+      PORT: 3002
+      DB_HOST: db_libros
+      DB_NAME: libros
+      DB_USER: admin
+      DB_PASSWORD: admin
+    ports:
+      - "3002:3002"
+
+  loans:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.loans
+    depends_on:
+      - db_loans
+      - db_libros
+      - db_usuarios
+    environment:
+      PORT: 3003
+      DB_HOST: db_loans
+      DB_NAME: loans
+      DB_USER: admin
+      DB_PASSWORD: admin
+      BOOKS_DB_HOST: db_libros
+      BOOKS_DB_NAME: libros
+      BOOKS_DB_USER: admin
+      BOOKS_DB_PASSWORD: admin
+      MEMBERS_DB_HOST: db_usuarios
+      MEMBERS_DB_NAME: usuarios
+      MEMBERS_DB_USER: admin
+      MEMBERS_DB_PASSWORD: admin
+    ports:
+      - "3003:3003"
+
+volumes:
+  db_auth_data:
+  db_usuarios_data:
+  db_libros_data:
+  db_loans_data:

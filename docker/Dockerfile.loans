@@ -1,0 +1,10 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY ./service/loans ./service/loans
+
+EXPOSE 3003
+CMD ["node", "service/loans/index.js"]

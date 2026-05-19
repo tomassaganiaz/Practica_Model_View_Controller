@@ -1,0 +1,10 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY ./service/books ./service/books
+
+EXPOSE 3002
+CMD ["node", "service/books/index.js"]

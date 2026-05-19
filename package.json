@@ -1,0 +1,17 @@
+{
+  "name": "biblioteca-backend-mvc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend de biblioteca en microservicios con Docker y bases de datos PostgreSQL.",
+  "scripts": {
+    "start:auth": "node service/auth/index.js",
+    "start:users": "node service/user/index.js",
+    "start:books": "node service/books/index.js",
+    "start:loans": "node service/loans/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.1"
+  }
+}
