@@ -1,10 +1,20 @@
+# Dockerfile para el microservicio de usuarios
+
+# Imagen base ligera de Node 20
 FROM node:20-alpine
+
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
+# Copiamos dependencias y las instalamos
 COPY package.json package-lock.json* ./
 RUN npm install
 
+# Copiamos el código fuente del servicio de usuarios
 COPY ./service/user ./service/user
 
+# Puerto expuesto para el servicio
 EXPOSE 3001
+
+# Comando de inicio del servidor
 CMD ["node", "service/user/index.js"]
