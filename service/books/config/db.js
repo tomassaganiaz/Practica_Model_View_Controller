@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 
-// PostgreSQL connection for the Libros microservice.
+// Conexión PostgreSQL para el microservicio Libros.
 const pool = new Pool({
   user: process.env.DB_USER || 'admin',
   host: process.env.DB_HOST || 'db_libros',
