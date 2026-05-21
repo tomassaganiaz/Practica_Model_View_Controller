@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
 
-// Parse incoming JSON for user requests and mount user routes under /api.
+// Analiza el JSON entrante para las solicitudes de usuario y monta las rutas de usuario en /api.
 app.use(express.json());
 app.use('/api', userRoutes);
 
