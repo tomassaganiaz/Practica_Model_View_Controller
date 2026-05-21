@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const authRoutes = require('./routes/authRoutes');
 
-// Common middleware to parse JSON bodies for all auth endpoints.
+// Middleware común para analizar cuerpos JSON para todos los puntos finales de autenticación.
 app.use(express.json());
 app.use('/api', authRoutes);
 
