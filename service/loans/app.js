@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const loanRoutes = require('./routes/loanRoutes');
 
-// Use JSON middleware and expose loan endpoints under /api.
+// Utilice middleware JSON y exponga los puntos finales de préstamos en /api.
 app.use(express.json());
 app.use('/api', loanRoutes);
 
