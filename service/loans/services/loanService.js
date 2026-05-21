@@ -2,8 +2,8 @@ const loanDao = require('../dao/loanDao');
 const bookDao = require('../dao/bookDao');
 const memberDao = require('../dao/memberDao');
 
-// Business rules for loan creation and returns live here.
-// This service coordinates the validation of member state, book stock, and loan counts.
+// Aquí se encuentran las reglas de negocio para la creación y devolución de préstamos.
+// Este servicio coordina la validación del estado miembro, el inventario contable y el número de préstamos.
 exports.createLoan = async (memberId, bookId) => {
   const member = await memberDao.findById(memberId);
   if (!member) throw new Error("Member not found");
@@ -15,8 +15,8 @@ exports.createLoan = async (memberId, bookId) => {
   const book = await bookDao.findById(bookId);
   if (!book) throw new Error("Book not found");
   if (book.stock <= 0) throw new Error("No available copies");
-
-  // Decrement stock immediately before creating the loan to avoid overselling.
+  
+// Disminuya el stock inmediatamente antes de crear el préstamo para evitar la sobreventa.
   await bookDao.updateStock(bookId, book.stock - 1);
   return await loanDao.create({ memberId, bookId, date: new Date() });
 };
