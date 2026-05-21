@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 
-// PostgreSQL connection for the Loans microservice.
+// Conexión PostgreSQL para el microservicio de Préstamos.
 const pool = new Pool({
   user: process.env.DB_USER || 'admin',
   host: process.env.DB_HOST || 'db_loans',
