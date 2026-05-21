@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-// User DAO performs CRUD operations over the socios table.
+// El DAO de usuario realiza operaciones CRUD sobre la tabla socios.
 exports.create = async (user) => {
   const result = await db.query(
     'INSERT INTO socios (nombre, bloqueado) VALUES ($1, $2) RETURNING *',
