@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
-// Create a connection pool to the PostgreSQL database.
-// Environments variables are used in Docker so each microservice can target its own SQL container.
+// Crea un pool de conexiones a la base de datos PostgreSQL.
+// En Docker se utilizan variables de entorno para que cada microservicio pueda usar su propio contenedor SQL.
 const pool = new Pool({
   user: process.env.DB_USER || 'admin',
   host: process.env.DB_HOST || 'db_auth',
