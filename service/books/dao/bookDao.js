@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-// Book DAO manages book persistence and stock control.
+// Book DAO gestiona la persistencia de los libros y el control de existencias.
 exports.create = async (book) => {
   const result = await db.query(
     'INSERT INTO libros (titulo, stock) VALUES ($1, $2) RETURNING *',
