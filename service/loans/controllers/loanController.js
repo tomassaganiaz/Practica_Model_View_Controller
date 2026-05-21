@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
-// Connection to the Usuarios database from the Loans service.
-// This allows the Loans service to verify member status and loan eligibility.
+// Conexión a la base de datos de Usuarios desde el servicio de Préstamos.
+// Esto permite al servicio de Préstamos verificar el estado del miembro y su elegibilidad para el préstamo.
 const pool = new Pool({
   user: process.env.MEMBERS_DB_USER || 'admin',
   host: process.env.MEMBERS_DB_HOST || 'db_usuarios',
