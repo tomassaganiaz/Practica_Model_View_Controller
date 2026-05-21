@@ -1,15 +1,15 @@
 const authDao = require('../dao/authDao');
 const jwt = require('jsonwebtoken');
 
-// Auth service handles login and registration flows.
-// This layer isolates business rules from the controller and the direct SQL queries.
+// El servicio de autenticación gestiona los flujos de inicio de sesión y registro.
+// Esta capa aísla las reglas de negocio del controlador y de las consultas SQL directas.
 exports.login = async (email, password) => {
   const user = await authDao.findByEmail(email);
   if (!user || user.password !== password) {
     throw new Error("Invalid credentials");
   }
-
-  // Create a JWT token that can be validated by any downstream service.
+  
+// Crea un token JWT que pueda ser validado por cualquier servicio posterior.
   return jwt.sign({ id: user.id, email: user.email }, "secretKey", { expiresIn: "1h" });
 };
 
