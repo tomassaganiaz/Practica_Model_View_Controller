@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
-// Connection to the Libros database from the Loans service.
-// The Loans microservice must validate stock before creating a new loan.
+// Conexión a la base de datos Libros desde el servicio de Préstamos.
+// El microservicio de Préstamos debe validar el stock antes de crear un nuevo préstamo.
 const pool = new Pool({
   user: process.env.BOOKS_DB_USER || 'admin',
   host: process.env.BOOKS_DB_HOST || 'db_libros',
