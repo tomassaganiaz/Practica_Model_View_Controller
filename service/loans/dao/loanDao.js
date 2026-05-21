@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-// Loan DAO contains the SQL operations for the Loans database.
+// El DAO de préstamos contiene las operaciones SQL para la base de datos de préstamos.
 exports.create = async (loan) => {
   const result = await db.query(
     'INSERT INTO loans (member_id, book_id, date, active) VALUES ($1, $2, $3, true) RETURNING *',
