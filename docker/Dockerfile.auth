@@ -1,0 +1,33 @@
+# Dockerfile para el microservicio de autenticación
+# Configura entorno Node.js y dependencias necesarias
+
+# Imagen base: Node 20 en Alpine (ligera y optimizada)
+FROM node:20-alpine
+
+# Definimos directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiamos archivos de dependencias primero para aprovechar la cache de Docker
+COPY package.json package-lock.json* ./
+
+# Instalamos dependencias (npm install en lugar de npm ci para flexibilidad)
+RUN npm install
+
+# Copiamos el código fuente del microservicio de autenticación
+# Incluimos todas las carpetas relevantes (routes, controllers, dao, config, services)
+COPY ./service/auth ./service/auth
+COPY ./service/auth/routes ./service/auth/routes
+COPY ./service/auth/controllers ./service/auth/controllers
+COPY ./service/auth/dao ./service/auth/dao
+COPY ./service/auth/config ./service/auth/config
+COPY ./service/auth/services ./service/auth/services
+
+# Copiamos los archivos principales de arranque
+COPY ./service/auth/index.js ./service/auth/index.js
+COPY ./service/auth/app.js ./service/auth/app.js
+
+# Exponemos el puerto en el que corre el servicio de autenticación
+EXPOSE 3004
+
+# Comando de inicio: lanza el servidor de autenticación
+CMD ["node", "service/auth/index.js"]

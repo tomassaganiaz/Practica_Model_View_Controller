@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  db_auth:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB_AUTH:-auth}
+    volumes:
+      - db_auth_data:/var/lib/postgresql/data
+      - ./docker/init/db_auth:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+
+  db_usuarios:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB_USERS:-usuarios}
+    volumes:
+      - db_usuarios_data:/var/lib/postgresql/data
+      - ./docker/init/db_usuarios:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+
+  db_libros:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB_BOOKS:-libros}
+    volumes:
+      - db_libros_data:/var/lib/postgresql/data
+      - ./docker/init/db_libros:/docker-entrypoint-initdb.d
+    ports:
+      - "5435:5432"
+
+  db_loans:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${POSTGRES_DB_LOANS:-loans}
+    volumes:
+      - db_loans_data:/var/lib/postgresql/data
+      - ./docker/init/db_loans:/docker-entrypoint-initdb.d
+    ports:
+      - "5436:5432"
+
+  auth:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.auth
+    depends_on:
+      - db_auth
+    environment:
+      PORT: 3004
+      DB_HOST: db_auth
+      DB_NAME: ${DB_NAME_AUTH:-auth}
+      DB_USER: ${DB_USER:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      JWT_SECRET: ${JWT_SECRET:-secret_key}
+      HTTP_TIMEOUT_MS: ${HTTP_TIMEOUT_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      USERS_SERVICE_URL: http://users:3001
+      BOOKS_SERVICE_URL: http://books:3002
+      LOANS_SERVICE_URL: http://loans:3003
+    ports:
+      - "3004:3004"
+
+  users:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.user
+    depends_on:
+      - db_usuarios
+    environment:
+      PORT: 3001
+      DB_HOST: db_usuarios
+      DB_NAME: ${DB_NAME_USERS:-usuarios}
+      DB_USER: ${DB_USER:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      JWT_SECRET: ${JWT_SECRET:-secret_key}
+      HTTP_TIMEOUT_MS: ${HTTP_TIMEOUT_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      AUTH_SERVICE_URL: http://auth:3004
+      BOOKS_SERVICE_URL: http://books:3002
+      LOANS_SERVICE_URL: http://loans:3003
+    ports:
+      - "3001:3001"
+
+  books:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.books
+    depends_on:
+      - db_libros
+    environment:
+      PORT: 3002
+      DB_HOST: db_libros
+      DB_NAME: ${DB_NAME_BOOKS:-libros}
+      DB_USER: ${DB_USER:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      JWT_SECRET: ${JWT_SECRET:-secret_key}
+      HTTP_TIMEOUT_MS: ${HTTP_TIMEOUT_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      AUTH_SERVICE_URL: http://auth:3004
+      USERS_SERVICE_URL: http://users:3001
+      LOANS_SERVICE_URL: http://loans:3003
+    ports:
+      - "3002:3002"
+
+  loans:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.loans
+    depends_on:
+      - db_loans
+    environment:
+      PORT: 3003
+      DB_HOST: db_loans
+      DB_NAME: ${DB_NAME_LOANS:-loans}
+      DB_USER: ${DB_USER:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-admin}
+      JWT_SECRET: ${JWT_SECRET:-secret_key}
+      HTTP_TIMEOUT_MS: ${HTTP_TIMEOUT_MS:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      AUTH_SERVICE_URL: http://auth:3004
+      BOOKS_SERVICE_URL: http://books:3002
+      USERS_SERVICE_URL: http://users:3001
+    ports:
+      - "3003:3003"
+
+volumes:
+  db_auth_data:
+  db_usuarios_data:
+  db_libros_data:
+  db_loans_data:

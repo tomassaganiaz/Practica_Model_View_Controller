@@ -1,0 +1,20 @@
+# Dockerfile para el microservicio de préstamos
+
+# Imagen base ligera de Node 20
+FROM node:20-alpine
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiamos dependencias y las instalamos
+COPY package.json package-lock.json* ./
+RUN npm install
+
+# Copiamos el código fuente del servicio de préstamos
+COPY ./service/loans ./service/loans
+
+# Puerto expuesto para el servicio
+EXPOSE 3003
+
+# Comando de inicio del servidor
+CMD ["node", "service/loans/index.js"]
